@@ -2,6 +2,9 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using CommandLine;
+using Managed.SandboxEngine;
+using NativeEngine;
+using Sandbox;
 
 namespace Postage;
 
@@ -38,21 +41,12 @@ public class Launcher
 			.WithParsed( Run );
 	}
 
-	private void Run( Options options )
+	private unsafe void Run( Options options )
 	{
 		RootDirectory = options.Root;
 
 		Log.DebugEnabled = options.Verbose;
 
-		try
-		{
-			var app = new EngineApp( options.Root );
-			app.LoadApp( options.Addon );
-			app.Start();
-		}
-		catch ( Exception e )
-		{
-			Log.Error( e );
-		}
+		var app = new EngineApp( RootDirectory );
 	}
 }
