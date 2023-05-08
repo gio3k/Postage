@@ -13,7 +13,7 @@ namespace Postage;
 
 public class EngineApp : IDisposable
 {
-	internal CMaterialSystem2AppSystemDict AppSystem { get; set; }
+	private CMaterialSystem2AppSystemDict AppSystem { get; }
 
 	private string RootDirectory { get; }
 	private string LibDirectory { get; }
