@@ -16,8 +16,11 @@ public class Launcher
 		[Option( "root", Required = true, HelpText = "s&box root - should contain bin & core" )]
 		public string Root { get; set; }
 
-		[Option( "app", Required = true, HelpText = "s&box game assembly to run" )]
-		public string Assembly { get; set; }
+		[Option( "app", Required = true, HelpText = "s&box game addon to run" )]
+		public string Addon { get; set; }
+
+		[Option( 'v', "verbose", Required = false, HelpText = "print all debug messages?", Default = false )]
+		public bool Verbose { get; set; }
 	}
 
 	private static Assembly AssemblyResolve( object sender, ResolveEventArgs args )
@@ -32,14 +35,24 @@ public class Launcher
 	{
 		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 		Parser.Default.ParseArguments<Options>( args )
-			.WithParsed( Run )
-			.WithNotParsed( v => Run(new Options { Assembly="", Root= "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox" } ) );
+			.WithParsed( Run );
 	}
 
 	private void Run( Options options )
 	{
 		RootDirectory = options.Root;
 
-		var app = new EngineApp( options.Root );
+		Log.DebugEnabled = options.Verbose;
+
+		try
+		{
+			var app = new EngineApp( options.Root );
+			app.LoadApp( options.Addon );
+			app.Start();
+		}
+		catch ( Exception e )
+		{
+			Log.Error( e );
+		}
 	}
 }
