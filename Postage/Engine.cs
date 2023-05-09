@@ -1,25 +1,23 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Managed.SandboxEngine;
 using NativeEngine;
 using Sandbox;
-using Sandbox.Diagnostics;
-using Sandbox.Engine;
-using Sandbox.Tasks;
-using Steamworks;
+using Sandbox.Internal;
 
 namespace Postage;
 
-public class EngineApp : IDisposable
+public static class Engine
 {
-	private CMaterialSystem2AppSystemDict AppSystem { get; }
+	private static CMaterialSystem2AppSystemDict AppSystem { get; set; }
 
-	private string RootDirectory { get; }
-	private string LibDirectory { get; }
-	private string BinDirectory { get; }
+	public static string RootDirectory { get; private set; }
+	public static string LibDirectory { get; private set; }
+	public static string BinDirectory { get; private set; }
 
-	public EngineApp( string root )
+	public static PostageLoadContext ClientContext { get; private set; }
+	public static PostageLoadContext MenuContext { get; private set; }
+
+	public static void Init( string root )
 	{
 		RootDirectory = root;
 		LibDirectory = root + "\\bin\\managed";
@@ -43,6 +41,10 @@ public class EngineApp : IDisposable
 		Log.Info( "Initializing custom Postage Interop..." );
 		Interop.Init( RootDirectory );
 
+		MenuContext = new PostageLoadContext( LibDirectory, "Sandbox.Menu" );
+		ClientContext = new PostageLoadContext( LibDirectory, "Sandbox.Client" );
+		//new PostageLoadContext( LibDirectory, "Sandbox.Tools" );
+
 		EngineGlobal.Plat_SetCurrentDirectory( RootDirectory );
 
 		// Pre-initialize engine
@@ -59,9 +61,33 @@ public class EngineApp : IDisposable
 			throw new Exception( "Failed to init Source 2 - SourceEngineInit fail" );
 	}
 
-	public void Dispose()
+	private static bool _wait;
+
+	public static bool RunFrame()
 	{
-		if ( !AppSystem.IsValid ) return;
-		AppSystem.Destroy();
+		if ( !_wait )
+		{
+			if ( IMenuAddon.Current != null )
+			{
+				Log.Info( $"MenuAddon == {IMenuAddon.Current}" );
+				IMenuAddon.Current.Init();
+				_wait = true;
+			}
+		}
+
+		EngineLoop.RunFrame( AppSystem, out var wantsToQuit );
+		return !wantsToQuit;
+	}
+
+	public static void Loop()
+	{
+		EngineGlobal.Plat_SetCurrentFrame( 0uL );
+		while ( RunFrame() )
+		{
+			BlockingLoopPumper.Run( delegate
+			{
+				RunFrame();
+			} );
+		}
 	}
 }

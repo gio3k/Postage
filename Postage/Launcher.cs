@@ -1,10 +1,6 @@
 ﻿global using static Postage.Logger;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using CommandLine;
-using Managed.SandboxEngine;
-using NativeEngine;
-using Sandbox;
 
 namespace Postage;
 
@@ -29,24 +25,43 @@ public class Launcher
 	private static Assembly AssemblyResolve( object sender, ResolveEventArgs args )
 	{
 		var trim = args.Name.Split( ',' )[0];
-		var name = $"{RootDirectory}\\bin\\managed\\{trim}.dll";
+		var name = $"{Engine.LibDirectory}\\{trim}.dll";
+		name = name.Replace( ".resources.dll", ".dll" );
 
-		return File.Exists( name ) ? Assembly.LoadFrom( name ) : null;
+		if ( File.Exists( name ) )
+			return Assembly.LoadFrom( name );
+
+		Log.Warn( $"{name} not found" );
+		return null;
 	}
 
 	private Launcher( IEnumerable<string> args )
 	{
-		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 		Parser.Default.ParseArguments<Options>( args )
-			.WithParsed( Run );
+			.WithParsed( Run )
+			.WithNotParsed( v =>
+			{
+				Log.Info( "Launching with basic defaults for debugging" );
+				var options = new Options();
+				options.Root = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox";
+				options.Addon = "C:\\src\\fishmoba\\.addon";
+				options.Verbose = true;
+				Run( options );
+			} )
+			;
 	}
 
-	private unsafe void Run( Options options )
+	private void Run( Options options )
 	{
+		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
+
 		RootDirectory = options.Root;
 
 		Log.DebugEnabled = options.Verbose;
 
-		var app = new EngineApp( RootDirectory );
+		AccessPatcher.Patch();
+
+		Engine.Init( options.Root );
+		Engine.Loop();
 	}
 }
