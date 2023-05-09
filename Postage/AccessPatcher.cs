@@ -33,7 +33,7 @@ public static class AccessPatcher
 		return tbs;
 	}
 
-	private static void AddSafeAssembly( AccessControl instance, string name )
+	private static void AddSafeAssembly( this AccessControl instance, string name )
 	{
 		var method = typeof(AccessControl).GetMethod( "AddSafeAssembly", BindingFlags.NonPublic | BindingFlags.Instance,
 			new[] { typeof(string) } );
@@ -42,7 +42,7 @@ public static class AccessPatcher
 		method.Invoke( instance, new object[] { name } );
 	}
 
-	private static AssemblyDefinition GetInstanceAssembly( AccessControl instance )
+	private static AssemblyDefinition GetAssemblyDefinition( this AccessControl instance )
 	{
 		var field = typeof(AccessControl).GetField( "Assembly", BindingFlags.NonPublic | BindingFlags.Instance );
 		if ( field == null )
@@ -53,7 +53,7 @@ public static class AccessPatcher
 		return asm;
 	}
 
-	private static void AddToInstanceVerified( AccessControl instance, ulong hash )
+	private static void AddToVerified( this AccessControl instance, ulong hash )
 	{
 		var field = typeof(AccessControl).GetField( "verified", BindingFlags.NonPublic | BindingFlags.Static );
 		if ( field == null )
@@ -75,15 +75,15 @@ public static class AccessPatcher
 
 			__instance.InitTouches( dll );
 
-			var asm = GetInstanceAssembly( __instance );
+			var asm = __instance.GetAssemblyDefinition();
 
 			Log.Info( $"Verifying assembly {asm.Name}" );
 
-			AddSafeAssembly( __instance, asm.Name.Name );
+			__instance.AddSafeAssembly( asm.Name.Name );
 
 			dll.Seek( 0, SeekOrigin.Begin );
 
-			AddToInstanceVerified( __instance, Crc64.FromStream( dll ) );
+			__instance.AddToVerified( Crc64.FromStream( dll ) );
 		}
 		catch ( Exception e )
 		{
