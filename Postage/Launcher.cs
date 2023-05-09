@@ -10,13 +10,15 @@ public class Launcher
 
 	public static string RootDirectory { get; private set; }
 
-	private class Options
+	public static Options LaunchOptions { get; private set; }
+
+	public class Options
 	{
 		[Option( "root", Required = true, HelpText = "s&box root - should contain bin & core" )]
 		public string Root { get; set; }
 
-		[Option( "app", Required = true, HelpText = "s&box game addon to run" )]
-		public string Addon { get; set; }
+		[Option( "app", Required = true, HelpText = "s&box game assembly to run" )]
+		public string Assembly { get; set; }
 
 		[Option( 'v', "verbose", Required = false, HelpText = "print all debug messages?", Default = false )]
 		public bool Verbose { get; set; }
@@ -44,7 +46,7 @@ public class Launcher
 				Log.Info( "Launching with basic defaults for debugging" );
 				var options = new Options();
 				options.Root = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox";
-				options.Addon = "C:\\src\\fishmoba\\.addon";
+				options.Assembly = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\assemblies\\calico.dll";
 				options.Verbose = true;
 				Run( options );
 			} )
@@ -53,15 +55,19 @@ public class Launcher
 
 	private void Run( Options options )
 	{
+		LaunchOptions = options;
+
 		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
-		RootDirectory = options.Root;
+		RootDirectory = LaunchOptions.Root;
 
-		Log.DebugEnabled = options.Verbose;
+		Log.DebugEnabled = LaunchOptions.Verbose;
 
 		AccessPatcher.Patch();
 
-		Engine.Init( options.Root );
+		Engine.Init( LaunchOptions.Root );
+
+
 		Engine.Loop();
 	}
 }
