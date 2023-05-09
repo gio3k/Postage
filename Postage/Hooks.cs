@@ -92,7 +92,6 @@ public static class Hooks
 		Log.Info( "Init hook worked!" );
 
 		IToolsDll.Current?.Spin();
-		IToolsDll.Current?.SetSplashStatus( "hiii" );
 
 		Log.Info( "Loading addons..." );
 		LocalProject.AddFromFileBuiltIn( "addons/base/.addon" );
