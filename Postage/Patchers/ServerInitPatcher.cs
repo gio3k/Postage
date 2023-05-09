@@ -89,7 +89,7 @@ public static class ServerInitPatcher
 				foreach ( var type in value.GetTypes() )
 				{
 					if ( type.IsAbstract ) continue;
-					if ( !type.HasBaseType( "GameManager" ) && type.Name != "GameManager" )
+					if ( type.BaseType?.Name != "GameManager" )
 						continue;
 
 					managerType = type;
@@ -111,7 +111,15 @@ public static class ServerInitPatcher
 				// BaseGameManager.Current
 				var type = GetAssembly( "Sandbox.Game" ).GetType( "Sandbox.BaseGameManager" );
 				var property = type.Property( "Current" );
-				property.SetValue( null, Activator.CreateInstance( managerType ) );
+				try
+				{
+					property.SetValue( null, Activator.CreateInstance( managerType ) );
+				}
+				catch ( Exception e )
+				{
+					Log.Warn( $"Failed to create GameManager instance: {e}" );
+				}
+
 				Log.Info( "Set BaseGameManager.Current" );
 			}
 

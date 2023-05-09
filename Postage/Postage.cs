@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using CommandLine;
 using CommandLine.Text;
+using NativeEngine;
 using Sandbox;
 using Sandbox.Diagnostics;
+using Console = System.Console;
 
 namespace Postage;
 
@@ -99,9 +101,6 @@ public class Postage
 
 		AccessPatcher.Patch();
 
-		LocalProject.AddFromFileBuiltIn( "addons/base/.addon" );
-		LocalProject.AddFromFileBuiltIn( "addons/menu/.addon" );
-
 		LocalProject.Initialize();
 
 		try
@@ -120,6 +119,9 @@ public class Postage
 		}
 
 		AppPackage = ProjectCtl.Load( new[] { options.AppAssembly }, options.AppContent );
+
+		g_pInputService.InsertCommand( InputCommandSource.ICS_SERVER, "gamemode parparpar.razorplatformer\n", 0, 0 );
+		g_pInputService.InsertCommand( InputCommandSource.ICS_SERVER, "map calico_dev\n", 0, 0 );
 
 		Engine.Loop();
 	}

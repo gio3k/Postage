@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Managed.SandboxEngine;
 using NativeEngine;
 using Sandbox;
@@ -31,9 +32,11 @@ public static class Engine
 		Log.Info( "Initializing custom Postage Interop..." );
 		Interop.Init( Postage.RootDirectory );
 
-		MenuContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Menu" );
+		// MenuContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Menu" );
 		ClientContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Client" );
-		ServerContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Server" );
+		ClientContext.AddSecondary( "Sandbox.Server" );
+		ServerContext = ClientContext;
+		//ServerContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Server" );
 		// new PostageLoadContext( LibDirectory, "Sandbox.Tools" );
 
 		EngineGlobal.Plat_SetCurrentDirectory( Postage.RootDirectory );
