@@ -57,13 +57,13 @@ public static class Hooks
 		if ( IClientDll.Current != null )
 		{
 			IClientDll.Current.Bootstrap();
-			Log.Info( "bootstrapped ClientDll!" );
+			Log.Info( "IClientDll->Bootstrap" );
 		}
 
 		if ( IMenuDll.Current != null )
 		{
 			IMenuDll.Current.Bootstrap();
-			Log.Info( "bootstrapped MenuDll!" );
+			Log.Info( "IMenuDll->Bootstrap" );
 		}
 		else
 		{
@@ -74,13 +74,13 @@ public static class Hooks
 		if ( IToolsDll.Current != null )
 		{
 			IToolsDll.Current.Bootstrap();
-			Log.Info( "bootstrapped ToolsDll!" );
+			Log.Info( "IToolsDll->Bootstrap" );
 		}
 
 		if ( IServerDll.Current != null )
 		{
 			IServerDll.Current.Bootstrap();
-			Log.Info( "bootstrapped ServerDll!" );
+			Log.Info( "IServerDll->Bootstrap" );
 		}
 
 		return 1;
@@ -113,28 +113,25 @@ public static class Hooks
 			if ( IMenuDll.Current != null )
 			{
 				IMenuDll.Current.PostBootstrap();
-				Log.Info( "post bootstrapped MenuDll!" );
-			}
-			else
-			{
+				Log.Info( "IMenuDll->PostBootstrap" );
 			}
 
 			if ( IClientDll.Current != null )
 			{
 				IClientDll.Current.PostBootstrap();
-				Log.Info( "post bootstrapped ClientDll!" );
+				Log.Info( "IClientDll->PostBootstrap" );
 			}
 
 			if ( IToolsDll.Current != null )
 			{
 				IToolsDll.Current.OnPostBoostrap();
-				Log.Info( "post bootstrapped ToolsDll!" );
+				Log.Info( "IToolsDll->PostBootstrap" );
 			}
 
 			if ( IServerDll.Current != null )
 			{
 				IServerDll.Current.PostBootstrap();
-				Log.Info( "post bootstrapped ServerDll!" );
+				Log.Info( "IServerDll->PostBootstrap" );
 			}
 
 			Gizmo.Engine.Initialize();
@@ -143,7 +140,6 @@ public static class Hooks
 			typeof(TypeLibrary).GetField( "OnClassName", BindingFlags.NonPublic | BindingFlags.Static )!
 				.SetValue( null, new Action<string>( v =>
 				{
-					Log.Info( v );
 					StringToken.FindOrCreate( v );
 				} ) );
 
