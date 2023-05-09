@@ -110,6 +110,12 @@ public static class Hooks
 		Log.Info( "Starting DLL post bootstrapping ->" );
 		try
 		{
+			if ( IToolsDll.Current != null )
+			{
+				IToolsDll.Current.OnPostBoostrap();
+				Log.Info( "IToolsDll->PostBoostrap (?)" );
+			}
+
 			if ( IMenuDll.Current != null )
 			{
 				IMenuDll.Current.PostBootstrap();
@@ -122,11 +128,6 @@ public static class Hooks
 				Log.Info( "IClientDll->PostBootstrap" );
 			}
 
-			if ( IToolsDll.Current != null )
-			{
-				IToolsDll.Current.OnPostBoostrap();
-				Log.Info( "IToolsDll->PostBootstrap" );
-			}
 
 			if ( IServerDll.Current != null )
 			{

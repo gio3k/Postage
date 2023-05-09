@@ -16,6 +16,7 @@ public static class Engine
 
 	public static PostageLoadContext ClientContext { get; private set; }
 	public static PostageLoadContext MenuContext { get; private set; }
+	public static PostageLoadContext ServerContext { get; private set; }
 
 	public static void Init( string root )
 	{
@@ -43,7 +44,8 @@ public static class Engine
 
 		MenuContext = new PostageLoadContext( LibDirectory, "Sandbox.Menu" );
 		ClientContext = new PostageLoadContext( LibDirectory, "Sandbox.Client" );
-		//new PostageLoadContext( LibDirectory, "Sandbox.Tools" );
+		ServerContext = new PostageLoadContext( LibDirectory, "Sandbox.Server" );
+		// new PostageLoadContext( LibDirectory, "Sandbox.Tools" );
 
 		EngineGlobal.Plat_SetCurrentDirectory( RootDirectory );
 
