@@ -63,20 +63,8 @@ public static class Engine
 			throw new Exception( "Failed to init Source 2 - SourceEngineInit fail" );
 	}
 
-	private static bool _wait;
-
 	public static bool RunFrame()
 	{
-		if ( !_wait )
-		{
-			if ( IMenuAddon.Current != null )
-			{
-				Log.Info( $"MenuAddon == {IMenuAddon.Current}" );
-				IMenuAddon.Current.Init();
-				_wait = true;
-			}
-		}
-
 		EngineLoop.RunFrame( AppSystem, out var wantsToQuit );
 		return !wantsToQuit;
 	}
