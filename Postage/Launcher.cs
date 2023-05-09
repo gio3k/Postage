@@ -1,6 +1,10 @@
 ﻿global using static Postage.Logger;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using CommandLine;
+using CommandLine.Text;
+using Sandbox;
+using Sandbox.Diagnostics;
 
 namespace Postage;
 
@@ -17,11 +21,20 @@ public class Launcher
 		[Option( "root", Required = true, HelpText = "s&box root - should contain bin & core" )]
 		public string Root { get; set; }
 
-		[Option( "app", Required = true, HelpText = "s&box game assembly to run" )]
-		public string Assembly { get; set; }
+		[Option( "app", Required = true, HelpText = "Game addon directory" )]
+		public string AppContent { get; set; }
 
-		[Option( 'v', "verbose", Required = false, HelpText = "print all debug messages?", Default = false )]
+		[Option( "apx", Required = true, HelpText = ".NET assembly to use as the main game assembly" )]
+		public string AppAssembly { get; set; }
+
+		[Option( "lib", Required = false, HelpText = ".NET assemblies to add" )]
+		public IEnumerable<string> Libraries { get; set; } = new List<string>();
+
+		[Option( 'v', "verbose", Required = false, HelpText = "Print all debug messages?", Default = false )]
 		public bool Verbose { get; set; }
+
+		[Option( "vv", Required = false, HelpText = "Print all trace messages?", Default = false )]
+		public bool SuperVerbose { get; set; }
 	}
 
 	private static Assembly AssemblyResolve( object sender, ResolveEventArgs args )
@@ -39,18 +52,10 @@ public class Launcher
 
 	private Launcher( IEnumerable<string> args )
 	{
+		Console.ResetColor();
+
 		Parser.Default.ParseArguments<Options>( args )
-			.WithParsed( Run )
-			.WithNotParsed( v =>
-			{
-				Log.Info( "Launching with basic defaults for debugging" );
-				var options = new Options();
-				options.Root = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox";
-				options.Assembly = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\sbox\\assemblies\\calico.dll";
-				options.Verbose = true;
-				Run( options );
-			} )
-			;
+			.WithParsed( Run );
 	}
 
 	private void Run( Options options )
@@ -65,8 +70,10 @@ public class Launcher
 
 		AccessPatcher.Patch();
 
-		Engine.Init( LaunchOptions.Root );
+		if ( LaunchOptions.SuperVerbose )
+			Logging.SetRule( "*", LogLevel.Trace );
 
+		Engine.Init( LaunchOptions.Root );
 
 		Engine.Loop();
 	}
