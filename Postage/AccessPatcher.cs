@@ -94,6 +94,8 @@ public static class AccessPatcher
 		outStream = Create( dll );
 		Log.Info( $"Verified -> input size {dll.Length}, output size {outStream.Length}" );
 
+		outStream.Seek( 0, SeekOrigin.Begin );
+
 		__result = true;
 		return false;
 	}
