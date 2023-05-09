@@ -94,9 +94,7 @@ public static class Hooks
 		IToolsDll.Current?.Spin();
 
 		Log.Info( "Loading addons..." );
-		LocalProject.AddFromFileBuiltIn( "addons/base/.addon" );
-		LocalProject.AddFromFileBuiltIn( "addons/menu/.addon" );
-		LocalProject.Initialize();
+		LocalProject.Startup();
 
 		Log.Info( "Loading static constructors for Sandbox.System..." );
 		foreach ( var type in Assembly.Load( "Sandbox.System" ).GetTypes() )
@@ -115,6 +113,12 @@ public static class Hooks
 				Log.Info( "IToolsDll->PostBoostrap (?)" );
 			}
 
+			if ( IServerDll.Current != null )
+			{
+				IServerDll.Current.PostBootstrap();
+				Log.Info( "IServerDll->PostBootstrap" );
+			}
+
 			if ( IMenuDll.Current != null )
 			{
 				IMenuDll.Current.PostBootstrap();
@@ -125,13 +129,6 @@ public static class Hooks
 			{
 				IClientDll.Current.PostBootstrap();
 				Log.Info( "IClientDll->PostBootstrap" );
-			}
-
-
-			if ( IServerDll.Current != null )
-			{
-				IServerDll.Current.PostBootstrap();
-				Log.Info( "IServerDll->PostBootstrap" );
 			}
 
 			Gizmo.Engine.Initialize();
