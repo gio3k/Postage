@@ -10,21 +10,18 @@ public static class AccessPatcher
 {
 	public static void Patch()
 	{
-		Log.Info( "Initializing Access Control patcher..." );
+		PatchCore.Update();
+		Log.Info( "About to patch access control..." );
 
-		var harmony = new Harmony( "gio.postage" );
-		var original = typeof(AccessControl).GetMethod( "VerifyAssembly" );
-		var patched = typeof(AccessPatcher).GetMethod( "VerifyAssembly", BindingFlags.NonPublic | BindingFlags.Static );
+		var original = typeof(AccessControl).Method( "VerifyAssembly" );
 
 		Log.Info( "Patching VerifyAssembly..." );
-		harmony.Patch( original, new HarmonyMethod( patched ) );
+		PatchCore.Harmony.Patch( original, new HarmonyMethod( Prefix ) );
 	}
 
 	private static TrustedBinaryStream Create( Stream stream )
 	{
-		var method = typeof(TrustedBinaryStream).GetMethod( "CreateInternal",
-			BindingFlags.NonPublic | BindingFlags.Static,
-			new[] { typeof(Stream) } );
+		var method = typeof(TrustedBinaryStream).Method( "CreateInternal", new[] { typeof(Stream) } );
 		if ( method == null )
 			throw new Exception( "Couldn't find TrustedBinaryStream.CreateInternal" );
 		var ret = method.Invoke( null, new object[] { stream } );
@@ -35,8 +32,7 @@ public static class AccessPatcher
 
 	private static void AddSafeAssembly( this AccessControl instance, string name )
 	{
-		var method = typeof(AccessControl).GetMethod( "AddSafeAssembly", BindingFlags.NonPublic | BindingFlags.Instance,
-			new[] { typeof(string) } );
+		var method = typeof(AccessControl).Method( "AddSafeAssembly", new[] { typeof(string) } );
 		if ( method == null )
 			throw new Exception( "Couldn't find AccessControl.AddSafeAssembly" );
 		method.Invoke( instance, new object[] { name } );
@@ -44,7 +40,7 @@ public static class AccessPatcher
 
 	private static AssemblyDefinition GetAssemblyDefinition( this AccessControl instance )
 	{
-		var field = typeof(AccessControl).GetField( "Assembly", BindingFlags.NonPublic | BindingFlags.Instance );
+		var field = typeof(AccessControl).Field( "Assembly" );
 		if ( field == null )
 			throw new Exception( "Couldn't find AccessControl.Assembly" );
 		var ret = field.GetValue( instance );
@@ -64,7 +60,7 @@ public static class AccessPatcher
 		hs.Add( hash );
 	}
 
-	private static bool VerifyAssembly( Stream dll, out TrustedBinaryStream outStream, ref bool __result,
+	private static bool Prefix( Stream dll, out TrustedBinaryStream outStream, ref bool __result,
 		AccessControl __instance )
 	{
 		outStream = null;

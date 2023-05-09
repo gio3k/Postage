@@ -10,44 +10,33 @@ public static class Engine
 {
 	private static CMaterialSystem2AppSystemDict AppSystem { get; set; }
 
-	public static string RootDirectory { get; private set; }
-	public static string LibDirectory { get; private set; }
-	public static string BinDirectory { get; private set; }
-
 	public static PostageLoadContext ClientContext { get; private set; }
 	public static PostageLoadContext MenuContext { get; private set; }
 	public static PostageLoadContext ServerContext { get; private set; }
 
 	public static void Init( string root )
 	{
-		RootDirectory = root;
-		LibDirectory = root + "\\bin\\managed";
-		BinDirectory = root + "\\bin\\win64";
-
-		Log.Info( $"RootDirectory: {RootDirectory}" );
-		Log.Info( $"LibDirectory: {LibDirectory}" );
-		Log.Info( $"BinDirectory: {BinDirectory}" );
-
 		Log.Info( "Preloading engine2..." );
-		if ( !NativeLibrary.TryLoad( $"{BinDirectory}\\engine2.dll", out var handle ) )
+		if ( !NativeLibrary.TryLoad( $"{Postage.BinDirectory}\\engine2.dll", out var handle ) )
 			throw new Exception( "Couldn't load engine2.dll" );
 
 		Log.Info( "Updating environment..." );
-		Environment.CurrentDirectory = RootDirectory;
-		Environment.SetEnvironmentVariable( "PATH", $"{BinDirectory};{Environment.GetEnvironmentVariable( "PATH" )}" );
+		Environment.CurrentDirectory = Postage.RootDirectory;
+		Environment.SetEnvironmentVariable( "PATH",
+			$"{Postage.BinDirectory};{Environment.GetEnvironmentVariable( "PATH" )}" );
 
 		Log.Info( "Initializing NativeInterop..." );
 		NativeInterop.Initialize();
 
 		Log.Info( "Initializing custom Postage Interop..." );
-		Interop.Init( RootDirectory );
+		Interop.Init( Postage.RootDirectory );
 
-		MenuContext = new PostageLoadContext( LibDirectory, "Sandbox.Menu" );
-		ClientContext = new PostageLoadContext( LibDirectory, "Sandbox.Client" );
-		ServerContext = new PostageLoadContext( LibDirectory, "Sandbox.Server" );
+		MenuContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Menu" );
+		ClientContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Client" );
+		ServerContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Server" );
 		// new PostageLoadContext( LibDirectory, "Sandbox.Tools" );
 
-		EngineGlobal.Plat_SetCurrentDirectory( RootDirectory );
+		EngineGlobal.Plat_SetCurrentDirectory( Postage.RootDirectory );
 
 		// Pre-initialize engine
 		Log.Info( "Initializing Source 2..." );

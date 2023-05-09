@@ -93,9 +93,6 @@ public static class Hooks
 
 		IToolsDll.Current?.Spin();
 
-		Log.Info( "Loading addons..." );
-		LocalProject.Startup();
-
 		Log.Info( "Loading static constructors for Sandbox.System..." );
 		foreach ( var type in Assembly.Load( "Sandbox.System" ).GetTypes() )
 			RuntimeHelpers.RunClassConstructor( type.TypeHandle );
@@ -146,6 +143,9 @@ public static class Hooks
 		{
 			Log.Info( e );
 		}
+
+		//g_pInputService.InsertCommand( InputCommandSource.ICS_SERVER, "gamemode local.calico\n", 0, 0 );
+		//g_pInputService.InsertCommand( InputCommandSource.ICS_SERVER, "map calico_dev\n", 0, 0 );
 
 		return 1;
 	}

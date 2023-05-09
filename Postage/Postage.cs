@@ -8,13 +8,18 @@ using Sandbox.Diagnostics;
 
 namespace Postage;
 
-public class Launcher
+public class Postage
 {
-	public static void Main( string[] args ) => new Launcher( args );
+	public static void Main( string[] args ) => new Postage( args );
 
 	public static string RootDirectory { get; private set; }
+	public static string LibDirectory { get; private set; }
+	public static string BinDirectory { get; private set; }
+
+	internal static PackageManager.ActivePackage AppPackage { get; private set; }
 
 	public static Options LaunchOptions { get; private set; }
+
 
 	public class Options
 	{
@@ -40,7 +45,7 @@ public class Launcher
 	private static Assembly AssemblyResolve( object sender, ResolveEventArgs args )
 	{
 		var trim = args.Name.Split( ',' )[0];
-		var name = $"{Engine.LibDirectory}\\{trim}.dll";
+		var name = $"{LibDirectory}\\{trim}.dll";
 		name = name.Replace( ".resources.dll", ".dll" );
 
 		if ( File.Exists( name ) )
@@ -50,7 +55,7 @@ public class Launcher
 		return null;
 	}
 
-	private Launcher( IEnumerable<string> args )
+	private Postage( IEnumerable<string> args )
 	{
 		Console.ResetColor();
 
@@ -64,16 +69,30 @@ public class Launcher
 
 		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
-		RootDirectory = LaunchOptions.Root;
+		RootDirectory = options.Root;
+		LibDirectory = options.Root + "\\bin\\managed";
+		BinDirectory = options.Root + "\\bin\\win64";
 
-		Log.DebugEnabled = LaunchOptions.Verbose;
+		Log.Info( $"RootDirectory: {RootDirectory}" );
+		Log.Info( $"LibDirectory: {LibDirectory}" );
+		Log.Info( $"BinDirectory: {BinDirectory}" );
 
-		AccessPatcher.Patch();
+		Log.DebugEnabled = options.Verbose;
 
 		if ( LaunchOptions.SuperVerbose )
 			Logging.SetRule( "*", LogLevel.Trace );
 
-		Engine.Init( LaunchOptions.Root );
+		Engine.Init( options.Root );
+
+		ServerInitPatcher.Patch();
+		AccessPatcher.Patch();
+
+		LocalProject.AddFromFileBuiltIn( "addons/base/.addon" );
+		LocalProject.AddFromFileBuiltIn( "addons/menu/.addon" );
+
+		LocalProject.Initialize();
+		
+		AppPackage = ProjectCtl.Load( options.Libraries.Concat( new[] { options.AppAssembly } ), options.AppContent );
 
 		Engine.Loop();
 	}
