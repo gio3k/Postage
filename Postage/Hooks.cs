@@ -144,6 +144,8 @@ public static class Hooks
 			Log.Info( e );
 		}
 
+		ServerInitPatcher.Patch();
+
 		//g_pInputService.InsertCommand( InputCommandSource.ICS_SERVER, "gamemode local.calico\n", 0, 0 );
 		//g_pInputService.InsertCommand( InputCommandSource.ICS_SERVER, "map calico_dev\n", 0, 0 );
 

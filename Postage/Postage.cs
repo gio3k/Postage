@@ -18,6 +18,8 @@ public class Postage
 
 	internal static PackageManager.ActivePackage AppPackage { get; private set; }
 
+	public static List<(string, byte[])> Libraries { get; } = new();
+
 	public static Options LaunchOptions { get; private set; }
 
 
@@ -44,14 +46,25 @@ public class Postage
 
 	private static Assembly AssemblyResolve( object sender, ResolveEventArgs args )
 	{
-		var trim = args.Name.Split( ',' )[0];
-		var name = $"{LibDirectory}\\{trim}.dll";
-		name = name.Replace( ".resources.dll", ".dll" );
+		var name = args.Name.Split( ',' )[0].Replace( ".resources", "" );
+		Log.Info( name );
 
-		if ( File.Exists( name ) )
-			return Assembly.LoadFrom( name );
+		var path = $"{LibDirectory}\\{name}.dll";
 
-		Log.Warn( $"{name} not found" );
+		if ( File.Exists( path ) )
+			return Assembly.LoadFrom( path );
+
+		foreach ( var (lib, bytes) in Libraries )
+		{
+			Log.Info( $"compare {lib}, {name}" );
+			if ( lib != name && name != $"package.{lib}" )
+				continue;
+
+			Log.Info( $"Loading game library {lib}" );
+			return Assembly.Load( bytes );
+		}
+
+		Log.Warn( $"{name} / {path} not found" );
 		return null;
 	}
 
@@ -84,15 +97,29 @@ public class Postage
 
 		Engine.Init( options.Root );
 
-		ServerInitPatcher.Patch();
 		AccessPatcher.Patch();
 
 		LocalProject.AddFromFileBuiltIn( "addons/base/.addon" );
 		LocalProject.AddFromFileBuiltIn( "addons/menu/.addon" );
 
 		LocalProject.Initialize();
-		
-		AppPackage = ProjectCtl.Load( options.Libraries.Concat( new[] { options.AppAssembly } ), options.AppContent );
+
+		try
+		{
+			foreach ( var library in options.Libraries )
+			{
+				var split = library.Split( ';' );
+				if ( split.Length != 2 )
+					throw new Exception( $"Invalid library {library}" );
+				Libraries.Add( (split[0], File.ReadAllBytes( split[1] )) );
+			}
+		}
+		catch ( Exception e )
+		{
+			Log.Info( e );
+		}
+
+		AppPackage = ProjectCtl.Load( new[] { options.AppAssembly }, options.AppContent );
 
 		Engine.Loop();
 	}

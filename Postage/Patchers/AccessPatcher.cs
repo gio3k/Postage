@@ -70,7 +70,14 @@ public static class AccessPatcher
 			__instance.Errors.Clear();
 
 			__instance.InitTouches( dll );
+		}
+		catch ( Exception e )
+		{
+			Log.Warn( $"Exception in VerifyAssembly stock code {e}" );
+		}
 
+		try
+		{
 			var asm = __instance.GetAssemblyDefinition();
 
 			Log.Info( $"Verifying assembly {asm.Name}" );
@@ -83,8 +90,7 @@ public static class AccessPatcher
 		}
 		catch ( Exception e )
 		{
-			Log.Warn( "Exception in patched VerifyAssembly" );
-			Log.Info( e );
+			Log.Warn( $"Exception in VerifyAssembly patched code {e}" );
 		}
 
 		outStream = Create( dll );

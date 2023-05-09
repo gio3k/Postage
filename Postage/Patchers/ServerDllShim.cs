@@ -19,4 +19,14 @@ public struct ServerDllShim
 		get => _type.Field( "PackageLoader" ).GetValue( Instance ) as PackageLoader;
 		set => _type.Field( "PackageLoader" ).SetValue( Instance, value );
 	}
+
+	internal void OnServerPackageInstalled( PackageManager.ActivePackage package, string context )
+	{
+		_type.Method( "OnServerPackageInstalled" ).Invoke( Instance, new object[] { package, context } );
+	}
+
+	internal void OnPackageAssemblyLoaded( string name, byte[] data )
+	{
+		_type.Method( "OnPackageAssemblyLoaded" ).Invoke( Instance, new object[] { name, data } );
+	}
 }
