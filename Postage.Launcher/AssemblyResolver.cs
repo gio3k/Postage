@@ -18,6 +18,15 @@ public static class AssemblyResolver
 		if ( File.Exists( path ) )
 			return Assembly.LoadFrom( path );
 
+		foreach ( var (lib, bytes) in Launcher.Libraries )
+		{
+			if ( lib != name && name != $"package.{lib}" )
+				continue;
+
+			Log.Info( $"Loading game library {lib}" );
+			return Assembly.Load( bytes );
+		}
+
 		Log.Warn( $"{name} / {path} not found" );
 		return null;
 	}

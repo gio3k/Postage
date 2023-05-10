@@ -19,8 +19,25 @@ public static class Launcher
 	public static string LauncherDirectory { get; private set; }
 	public static Source2Instance Engine;
 
+	internal static List<(string, byte[])> Libraries { get; } = new();
+
+	private static void AddGamePackage()
+	{
+		foreach ( var library in Options.Libraries )
+		{
+			var split = library.Split( ';' );
+			if ( split.Length != 2 )
+				throw new Exception( $"Invalid library {library}" );
+			Libraries.Add( (split[0], File.ReadAllBytes( split[1] )) );
+		}
+
+		ProjectUtil.LoadAddGame( new[] { Options.AppAssembly }, Options.AppContent );
+	}
+
 	private static void Run( CommandLineOptions options )
 	{
+		Options = options;
+
 		Log.Info( "Hello from Postage! *waves*" );
 
 		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolver.AssemblyResolve;
@@ -40,6 +57,9 @@ public static class Launcher
 		Engine = new Source2Instance( GameDirectory );
 		Engine.Initialize();
 
+		Log.Info( "Adding game package..." );
+		AddGamePackage();
+
 		Log.Info( "Adding ServerModifier to the server context..." );
 		try
 		{
@@ -58,13 +78,13 @@ public static class Launcher
 
 public class CommandLineOptions
 {
-	[Option( "root", Required = false, HelpText = "s&box root - should contain bin & core" )]
+	[Option( "root", Required = true, HelpText = "s&box root - should contain bin & core" )]
 	public string Root { get; set; }
 
-	[Option( "app", Required = false, HelpText = "Game addon directory" )]
+	[Option( "app", Required = true, HelpText = "Game addon directory" )]
 	public string AppContent { get; set; }
 
-	[Option( "apx", Required = false, HelpText = ".NET assembly to use as the main game assembly" )]
+	[Option( "apx", Required = true, HelpText = ".NET assembly to use as the main game assembly" )]
 	public string AppAssembly { get; set; }
 
 	[Option( "lib", Required = false, HelpText = ".NET assemblies to add" )]

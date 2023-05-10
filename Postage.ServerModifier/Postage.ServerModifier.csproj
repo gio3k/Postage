@@ -18,4 +18,16 @@
       <ProjectReference Include="..\Postage.Core\Postage.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="Sandbox.Access">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Access.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Game">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Game.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Reflection">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Reflection.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

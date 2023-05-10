@@ -13,6 +13,12 @@ public class ContextHost
 
 	public ContextHost( Source2Instance engine )
 	{
+		// Initialize the menu
+		var menu = new LauncherLoadContext( engine );
+		menu.AddAssembly( "Sandbox.Event" );
+		menu.AddAssembly( "Sandbox.Game" );
+		menu.AddMainAssembly( "Sandbox.Menu" );
+
 		// Initialize the client
 		Client = new LauncherLoadContext( engine );
 		Client.AddAssembly( "Sandbox.Event" );
