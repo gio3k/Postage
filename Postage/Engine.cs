@@ -34,7 +34,6 @@ public static class Engine
 
 		// MenuContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Menu" );
 		ClientContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Client" );
-		ClientContext.AddSecondary( "Sandbox.Server" );
 		ServerContext = ClientContext;
 		//ServerContext = new PostageLoadContext( Postage.LibDirectory, "Sandbox.Server" );
 		// new PostageLoadContext( LibDirectory, "Sandbox.Tools" );

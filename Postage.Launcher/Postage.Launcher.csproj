@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Sandbox.Test</AssemblyName>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>../out</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Postage.Core\Postage.Core.csproj" />
+      <ProjectReference Include="..\Postage.Engine\Postage.Engine.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Sandbox.Engine">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Engine.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.System">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.System.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+</Project>

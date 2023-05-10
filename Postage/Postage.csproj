@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AssemblyName>Sandbox.Test</AssemblyName>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="Mono.Cecil">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Mono.Cecil.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Access">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Access.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Engine">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Engine.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Game">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Game.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Reflection">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Reflection.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.Server">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Server.dll</HintPath>
+      </Reference>
+      <Reference Include="Sandbox.System">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.System.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandLineParser" Version="2.9.1" />
+      <PackageReference Include="Lib.Harmony" Version="2.3.0-alpha.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Postage.Core\Postage.Core.csproj" />
+    </ItemGroup>
+
+</Project>
