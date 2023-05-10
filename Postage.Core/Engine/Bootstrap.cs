@@ -35,14 +35,17 @@ public class PostageBootstrap
 		Logging.Enabled = true;
 		Logging.PrintToConsole = true;
 
-		Log.Info( "Initializing engine file system..." );
-		EngineFileSystem.Initialize( rootFolder );
-		EngineFileSystem.InitializeConfigFolder();
-		EngineFileSystem.InitializeAddonsFolder();
-		EngineFileSystem.InitializeDownloadsFolder();
-		EngineFileSystem.InitializeDataFolder();
-		EngineFileSystem.DownloadedFiles.CreateDirectory( "/assets" );
-		PackageManager.PackageTemporaryDownloadFolder = EngineFileSystem.DownloadedFiles.GetFullPath( "/assets" );
+		try
+		{
+			Log.Info( "Initializing engine file system..." );
+			FileSystemHelper.Initialize( rootFolder );
+			EngineFileSystem.Root.CreateDirectory( "/cache" );
+			PackageManager.PackageTemporaryDownloadFolder = EngineFileSystem.Root.GetFullPath( "/cache" );
+		}
+		catch ( Exception e )
+		{
+			Log.Info( e );
+		}
 
 		Log.Info( "Bootstrapping contexts..." );
 		IClientDll.Current?.Bootstrap();
