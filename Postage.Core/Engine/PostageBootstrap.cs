@@ -60,8 +60,7 @@ public class PostageBootstrap
 	{
 		IToolsDll.Current?.Spin();
 
-		Log.Info( "Initializing Postage project utils..." );
-		ProjectUtil.Initialize();
+		LocalProject.Initialize();
 
 		Log.Info( "Loading static constructors for Sandbox.System..." );
 		foreach ( var type in Assembly.Load( "Sandbox.System" ).GetTypes() )

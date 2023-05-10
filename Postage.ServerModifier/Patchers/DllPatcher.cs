@@ -39,19 +39,13 @@ internal static class DllPatcher
 	{
 		Log.Info( "Initializing server..." );
 		Log.Info( "Preparing package loader..." );
-		var packageLoader = ServerInitUtil.PreparePackageLoader( __instance, GlobalGameNamespace.TypeLibrary );
+		var loader = ServerInitialize.InitializePackageLoader( __instance );
 
-		Log.Info( "Getting package loader access control..." );
-		var accessControl = ServerInitUtil.GetPackageLoaderAccessControl( packageLoader );
+		Log.Info( "Setting game package!" );
+		ServerInitialize.SetPackage( ProjectManager.GameProject );
 
-		Log.Info( "Setting HotloadManager.AssemblyResolver" );
-		SetHotloadManagerAssemblyResolver( accessControl );
-
-		Log.Info( "Setting game package..." );
-		ServerInitUtil.SetGamePackage();
-
-		Log.Info( "Loading all package assemblies..." );
-		ServerInitUtil.LoadAllPackageAssemblies( packageLoader );
+		Log.Info( "Loading assemblies..." );
+		ServerInitialize.LoadAssemblies( loader );
 
 		foreach ( var typeDescription in GlobalGameNamespace.TypeLibrary.GetTypes<BaseGameManager>() )
 		{

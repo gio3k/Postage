@@ -16,6 +16,12 @@ public static class ReflectUtil
 			BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static );
 	}
 
+	public static EventInfo Event( this Type type, string name )
+	{
+		return type.GetEvent( name,
+			BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static );
+	}
+
 	public static MethodInfo Method( this Type type, string name )
 	{
 		return type.GetMethod( name,

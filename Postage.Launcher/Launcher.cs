@@ -23,15 +23,30 @@ public static class Launcher
 
 	private static void AddGamePackage()
 	{
-		foreach ( var library in Options.Libraries )
+		try
 		{
-			var split = library.Split( ';' );
-			if ( split.Length != 2 )
-				throw new Exception( $"Invalid library {library}" );
-			Libraries.Add( (split[0], File.ReadAllBytes( split[1] )) );
-		}
+			var assemblies = new List<string>();
+			var project = new Project { AddonDirectory = Options.AppContent };
 
-		ProjectUtil.LoadAddGame( new[] { Options.AppAssembly }, Options.AppContent );
+			assemblies.Add( Options.AppAssembly );
+
+			foreach ( var library in Options.Libraries )
+			{
+				var split = library.Split( ';' );
+				if ( split.Length != 2 )
+					throw new Exception( $"Invalid library {library}" );
+				Libraries.Add( (split[0], File.ReadAllBytes( split[1] )) );
+				assemblies.Add( split[1] );
+			}
+
+			project.Assemblies = assemblies;
+
+			ProjectCreator.MakeGameProject( project );
+		}
+		catch ( Exception e )
+		{
+			Log.Info( e );
+		}
 	}
 
 	private static void Run( CommandLineOptions options )
