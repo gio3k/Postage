@@ -1,5 +1,5 @@
 ﻿using Sandbox;
-using Sandbox.Internal;
+using Sandbox.Engine;
 using Steamworks;
 
 namespace Postage.Core.Engine;
@@ -11,7 +11,7 @@ public static class NoMenuHelper
 {
 	public static void Bootstrap()
 	{
-		if ( IMenuAddon.Current != null ) return;
+		if ( IMenuDll.Current != null ) return;
 
 		Log.Info( "Loaded without menu - doing extra bootstrapping" );
 
@@ -24,6 +24,6 @@ public static class NoMenuHelper
 
 	public static void PostBootstrap()
 	{
-		if ( IMenuAddon.Current != null ) return;
+		if ( IMenuDll.Current != null ) return;
 	}
 }
