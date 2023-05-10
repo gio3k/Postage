@@ -6,7 +6,7 @@ namespace Postage.Core.Engine;
 
 public class Source2Instance
 {
-	internal static CMaterialSystem2AppSystemDict AppSystem { get; private set; }
+	internal CMaterialSystem2AppSystemDict AppSystem { get; private set; }
 
 	public GameDirectory Directory { get; }
 	public ContextHost Contexts { get; }
