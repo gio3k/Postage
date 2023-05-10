@@ -26,7 +26,7 @@ public static class Interop
 		Log.Info( "Preparing to initialize interop!" );
 		var etm = GenerateEngineToManagedArray();
 		var sizes = GenerateSizeArray();
-		var mte = new nint[1740];
+		var mte = new nint[1741];
 
 		if ( PreInitPtr == 0x0 || InitPtr == 0x0 )
 			throw new Exception( "Interop hooks not set! Use SetHooks()" );
@@ -35,7 +35,7 @@ public static class Interop
 		fixed ( nint* imports = etm )
 		fixed ( nint* exports = mte )
 		fixed ( int* structSizes = sizes )
-			dgp( 2164, imports, exports, structSizes );
+			dgp( 11788, imports, exports, structSizes );
 
 		Log.Info( "Initialized." );
 	}
