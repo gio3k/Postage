@@ -9,5 +9,6 @@ public static class Patches
 	{
 		var harmony = new Harmony( "gio.postage.core" );
 		AccessPatcher.Patch( harmony );
+		LocalPackagePatcher.Patch( harmony );
 	}
 }
