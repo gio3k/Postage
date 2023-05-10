@@ -14,4 +14,8 @@
       <PackageReference Include="Lib.Harmony" Version="2.3.0-alpha.5" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Postage.Core\Postage.Core.csproj" />
+    </ItemGroup>
+
 </Project>

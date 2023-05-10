@@ -1,6 +1,7 @@
 ﻿global using static Postage.Logger;
 using CommandLine;
 using Postage.Core;
+using Postage.Core.Engine;
 
 namespace Postage;
 
@@ -8,6 +9,7 @@ public static class Launcher
 {
 	public static void Main( string[] args )
 	{
+		LauncherDirectory = Environment.CurrentDirectory;
 		Parser.Default.ParseArguments<CommandLineOptions>( args )
 			.WithParsed( Run );
 	}
@@ -15,14 +17,13 @@ public static class Launcher
 	public static CommandLineOptions Options { get; private set; }
 	public static GameDirectory GameDirectory { get; private set; }
 	public static string LauncherDirectory { get; private set; }
-	public static Preloader Preloader { get; private set; }
-	public static ContextHost ContextHost { get; private set; }
+	public static Source2Instance Engine;
 
 	private static void Run( CommandLineOptions options )
 	{
 		Log.Info( "Hello from Postage! *waves*" );
 
-		LauncherDirectory = Environment.CurrentDirectory;
+		AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolver.AssemblyResolve;
 
 		Log.Info( "Initializing game dir..." );
 		GameDirectory = new GameDirectory( options.Root );
@@ -32,15 +33,23 @@ public static class Launcher
 		Environment.SetEnvironmentVariable( "PATH",
 			$"{GameDirectory.Binaries};{Environment.GetEnvironmentVariable( "PATH" )}" );
 
-		Log.Info( "Initializing preloader..." );
-		Preloader = new Preloader();
+		Log.Info( "Preparing to start the engine..." );
+		Engine = new Source2Instance( GameDirectory );
+		Engine.Initialize();
 
-		Log.Info( "Initializing interop..." );
-		Interop.InitializeEngineInterop();
+		Log.Info( "Adding ServerModifier to the server context..." );
+		try
+		{
+			Engine.Contexts.Server.AddMainAssembly( $"{LauncherDirectory}\\Postage.ServerModifier.dll",
+				true );
+		}
+		catch ( Exception e )
+		{
+			Log.Info( e );
+		}
 
-		Log.Info( "Initializing context host..." );
-		ContextHost = new ContextHost();
-		ContextHost.Init();
+		Log.Info( "Starting engine loop..." );
+		Engine.StartLooping();
 	}
 }
 

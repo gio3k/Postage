@@ -1,22 +1,20 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Numerics;
+using System.Runtime.InteropServices;
 using Managed.SandboxEngine;
 using NativeEngine;
-using Postage.Engine;
+using Postage.Core.Engine;
 using Sandbox;
 
-namespace Postage;
+namespace Postage.Core;
 
 public static class Interop
 {
 	[UnmanagedFunctionPointer( CallingConvention.Cdecl )]
 	private unsafe delegate void NetCoreImportDelegate( int hash, void* imports, void* exports, int* structSizes );
 
-	public static unsafe void InitializeEngineInterop()
+	public static unsafe void InitializeEngineInterop( Source2Instance engine )
 	{
-		if ( !NativeLibrary.TryLoad( "engine2.dll", out var handle ) )
-			throw new Exception( "Couldn't load engine2.dll" );
-
-		var export = NativeLibrary.GetExport( handle, "igen_engine" );
+		var export = NativeLibrary.GetExport( engine.Preloader.Engine2, "igen_engine" );
 		if ( export == 0 )
 			throw new Exception( "Couldn't load igen_engine from engine2.dll" );
 
@@ -30,6 +28,9 @@ public static class Interop
 		var sizes = GenerateSizeArray();
 		var mte = new nint[1740];
 
+		if ( PreInitPtr == 0x0 || InitPtr == 0x0 )
+			throw new Exception( "Interop hooks not set! Use SetHooks()" );
+
 		Log.Info( "Initializing interop..." );
 		fixed ( nint* imports = etm )
 		fixed ( nint* exports = mte )
@@ -39,14 +40,21 @@ public static class Interop
 		Log.Info( "Initialized." );
 	}
 
+	public static void SetHooks( nint preInit, nint init )
+	{
+		PreInitPtr = preInit;
+		InitPtr = init;
+	}
+
+	private static nint PreInitPtr;
+	private static nint InitPtr;
+
 	private static unsafe nint[] GenerateEngineToManagedArray()
 	{
 		return new[]
 		{
 			(nint)(delegate* unmanaged<int, nint, void>)(&Exports.SndbxDgnstcs_Logging_RegisterEngineLogger),
-			(nint)(delegate* unmanaged<nint, int, int, int, int, int, int, int>)(&EngineHooks
-				.SandboxEngine_Bootstrap_PreInit),
-			(nint)(delegate* unmanaged<int>)(&EngineHooks.SandboxEngine_Bootstrap_Init),
+			PreInitPtr, InitPtr,
 			(nint)(delegate* unmanaged<nint, nint, ulong, void>)(&Exports.SandboxEngine_Hardware_SetGpu),
 			(nint)(delegate* unmanaged<void>)(&Exports.Sandbox_EngineLoop_EnterMainMenu),
 			(nint)(delegate* unmanaged<void>)(&Exports.Sandbox_EngineLoop_LeaveMainMenu),

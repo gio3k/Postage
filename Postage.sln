@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postage.Launcher", "Postage
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postage.ServerModifier", "Postage.ServerModifier\Postage.ServerModifier.csproj", "{37AB123F-4EE2-4FBA-AAC5-337DAF92AEF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postage.Engine", "Postage.Engine\Postage.Engine.csproj", "{CB16F3D7-DB9F-4AA3-8D83-799C5FEAB197}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Postage.Core", "Postage.Core\Postage.Core.csproj", "{9E2FFD26-3774-4671-8F44-6C99CF17C6BB}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{37AB123F-4EE2-4FBA-AAC5-337DAF92AEF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37AB123F-4EE2-4FBA-AAC5-337DAF92AEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37AB123F-4EE2-4FBA-AAC5-337DAF92AEF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CB16F3D7-DB9F-4AA3-8D83-799C5FEAB197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CB16F3D7-DB9F-4AA3-8D83-799C5FEAB197}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CB16F3D7-DB9F-4AA3-8D83-799C5FEAB197}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CB16F3D7-DB9F-4AA3-8D83-799C5FEAB197}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9E2FFD26-3774-4671-8F44-6C99CF17C6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9E2FFD26-3774-4671-8F44-6C99CF17C6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E2FFD26-3774-4671-8F44-6C99CF17C6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
