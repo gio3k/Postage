@@ -9,6 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="Sandbox.Access">
+        <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Access.dll</HintPath>
+      </Reference>
       <Reference Include="Sandbox.Engine">
         <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.Engine.dll</HintPath>
       </Reference>
@@ -21,6 +24,10 @@
       <Reference Include="Sandbox.System">
         <HintPath>..\..\..\Program Files (x86)\Steam\steamapps\common\sbox\bin\managed\Sandbox.System.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Lib.Harmony" Version="2.3.0-alpha.5" />
     </ItemGroup>
 
 </Project>

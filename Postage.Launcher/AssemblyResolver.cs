@@ -10,6 +10,10 @@ public static class AssemblyResolver
 		Log.Info( name );
 
 		var path = $"{Launcher.GameDirectory.Libraries}\\{name}.dll";
+		if ( File.Exists( path ) )
+			return Assembly.LoadFrom( path );
+
+		path = $"{Launcher.LauncherDirectory}\\{name}.dll";
 
 		if ( File.Exists( path ) )
 			return Assembly.LoadFrom( path );
