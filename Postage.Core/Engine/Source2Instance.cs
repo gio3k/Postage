@@ -1,4 +1,6 @@
-﻿using NativeEngine;
+﻿using Managed.SandboxEngine;
+using NativeEngine;
+using Postage.Core.Patchers;
 using Sandbox;
 using Sandbox.Internal;
 
@@ -27,23 +29,10 @@ public class Source2Instance
 		// Initialize interop
 		Log.Info( "Initializing native interop..." );
 		NativeInterop.Initialize();
-
-		Log.Info( "Setting hooks..." );
-		unsafe
-		{
-			Interop.SetHooks(
-				(nint)(delegate* unmanaged<nint, int, int, int, int, int, int, int>)(&InternalHooks
-					.SandboxEngine_Bootstrap_PreInit),
-				(nint)(delegate* unmanaged<int>)(&InternalHooks.SandboxEngine_Bootstrap_Init)
-			);
-		}
 	}
 
 	public void Initialize()
 	{
-		Log.Info( "Initializing Postage interop..." );
-		Interop.InitializeEngineInterop( this );
-
 		// Start initializing the engine!
 		Log.Info( "Initializing Source 2..." );
 		if ( !EngineGlobal.SourceEnginePreInit( Environment.CommandLine.Replace( ".dll", ".exe" ), true, false ) )

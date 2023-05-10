@@ -50,11 +50,13 @@ public static class Launcher
 		Environment.SetEnvironmentVariable( "PATH",
 			$"{GameDirectory.Binaries};{Environment.GetEnvironmentVariable( "PATH" )}" );
 
-		Log.Info( "Applying runtime patches..." );
-		Patches.Apply();
-
 		Log.Info( "Preparing to start the engine..." );
 		Engine = new Source2Instance( GameDirectory );
+
+		Log.Info( "Applying runtime patches before engine init..." );
+		Patches.Apply();
+
+		Log.Info( "Starting the engine!" );
 		Engine.Initialize();
 
 		Log.Info( "Adding game package..." );

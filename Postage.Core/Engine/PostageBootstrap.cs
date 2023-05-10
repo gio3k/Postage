@@ -40,6 +40,7 @@ public class PostageBootstrap
 			Log.Info( "Initializing engine file system..." );
 			FileSystemHelper.Initialize( rootFolder );
 			EngineFileSystem.Root.CreateDirectory( "/cache" );
+			EngineFileSystem.InitializeConfigFolder();
 			PackageManager.PackageTemporaryDownloadFolder = EngineFileSystem.Root.GetFullPath( "/cache" );
 		}
 		catch ( Exception e )
