@@ -95,4 +95,9 @@ public static class ProjectUtil
 		StaticData.GamePackage = instance;
 		return instance;
 	}
+
+	public static void Initialize()
+	{
+		LocalProject.Initialize();
+	}
 }
