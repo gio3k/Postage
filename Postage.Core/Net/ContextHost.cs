@@ -10,14 +10,18 @@ public class ContextHost
 {
 	public LauncherLoadContext Client { get; }
 	public LauncherLoadContext Server { get; }
+	public LauncherLoadContext Menu { get; }
 
-	public ContextHost( Source2Instance engine )
+	public ContextHost( Source2Instance engine, bool menu = false )
 	{
 		// Initialize the menu
-		var menu = new LauncherLoadContext( engine );
-		menu.AddAssembly( "Sandbox.Event" );
-		menu.AddAssembly( "Sandbox.Game" );
-		menu.AddMainAssembly( "Sandbox.Menu" );
+		if ( menu )
+		{
+			Menu = new LauncherLoadContext( engine );
+			Menu.AddAssembly( "Sandbox.Event" );
+			Menu.AddAssembly( "Sandbox.Game" );
+			Menu.AddMainAssembly( "Sandbox.Menu" );
+		}
 
 		// Initialize the client
 		Client = new LauncherLoadContext( engine );
