@@ -45,6 +45,7 @@ public static class Launcher
 		}
 		catch ( Exception e )
 		{
+			Log.Error( "Failed to load game project. Make sure your arguments are correct." );
 			Log.Info( e );
 		}
 	}
