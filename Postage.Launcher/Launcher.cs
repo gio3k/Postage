@@ -42,6 +42,8 @@ public static class Launcher
 			project.Assemblies = assemblies;
 
 			ProjectCreator.MakeGameProject( project );
+
+			ProjectManager.GameProject = project;
 		}
 		catch ( Exception e )
 		{

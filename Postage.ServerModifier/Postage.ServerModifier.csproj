@@ -30,4 +30,8 @@
       </Reference>
     </ItemGroup>
 
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="copy C:\src\Postage\out\net7.0\Postage.ServerModifier.dll C:\src\PostageEnv" />
+    </Target>
+
 </Project>

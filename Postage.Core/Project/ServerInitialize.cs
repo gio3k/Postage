@@ -23,7 +23,14 @@ public static class ServerInitialize
 			GetOnPackageAssemblyLoaded( instance ).Invoke( instance, new object[] { s, bytes } );
 		};
 
-		Game.HotloadManager.AssemblyResolver = packageLoader.AccessControl;
+		try
+		{
+			Game.HotloadManager.AssemblyResolver = packageLoader.AccessControl;
+		}
+		catch ( Exception e )
+		{
+			Log.Warn( "Couldn't set AssemblyResolver?" );
+		}
 
 		return packageLoader;
 	}

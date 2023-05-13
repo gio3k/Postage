@@ -27,7 +27,7 @@ public static class ProjectManager
 		{
 			// Load assembly into stream
 			Log.Info( $"Loading assembly {name} from project {project}" );
-			var bytes = apfs.ReadAllBytes( name ).ToArray();
+			var bytes = apfs.ReadAllBytes( $"/.bin/{name}" ).ToArray();
 			var stream = new MemoryStream( bytes );
 
 			// Create registration

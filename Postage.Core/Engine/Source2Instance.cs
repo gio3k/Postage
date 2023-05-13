@@ -45,6 +45,8 @@ public class Source2Instance
 		// Initialize engine
 		if ( !EngineGlobal.SourceEngineInit( AppSystem ) )
 			throw new Exception( "Failed to init Source 2 - SourceEngineInit fail" );
+
+		AppSystem.SetAppWindowTitle( "Postage" );
 	}
 
 	private bool RunFrame()
